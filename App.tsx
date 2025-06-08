@@ -149,6 +149,31 @@ const App: React.FC = () => {
       addLog(`No scraped text available for ${urlData.url}`, 'error');
     }
   };
+
+  const regenerateMetadataForUrl = async (id: string) => {
+    const urlData = processedUrls.find(u => u.id === id);
+    if (!urlData) {
+      addLog(`URL data not found for ID: ${id}`, 'error');
+      return;
+    }
+
+    if (!urlData.extractedText || !urlData.detectedFramework) {
+      addLog(`Cannot regenerate metadata for ${urlData.url}. Missing extracted text or detected framework.`, 'error');
+      return;
+    }
+
+    try {
+      updateUrlStatus(id, { status: 'generating' });
+      addLog(`Regenerating metadata for ${urlData.url}`, 'info');
+      const proposals = await generateMetadata(urlData.extractedText, urlData.detectedFramework, urlData.frameworkJustification || '');
+      updateUrlStatus(id, { proposals, status: 'completed' });
+      addLog(`Metadata regenerated for ${urlData.url}`, 'success');
+    } catch (error: any) {
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      updateUrlStatus(id, { status: 'error', error: errorMessage });
+      addLog(`Error regenerating metadata for ${urlData.url}: ${errorMessage}`, 'error');
+    }
+  };
   
   const totalUrls = processedUrls.length;
   const completedUrls = processedUrls.filter(u => u.status === 'completed' || u.status === 'error').length;
@@ -173,8 +198,8 @@ const App: React.FC = () => {
           </div>
         )}
 
-        <UrlProcessTable 
-          urls={processedUrls} 
+        <UrlProcessTable
+          urls={processedUrls}
           onDeleteUrl={handleDeleteUrl}
           onDownloadScrapedText={handleDownloadScrapedText}
           onRetryUrl={(urlId) => {
@@ -185,6 +210,7 @@ const App: React.FC = () => {
               addLog(`Retrying URL: ${urlToRetry.url}`, 'info');
             }
           }}
+          onRegenerateUrl={regenerateMetadataForUrl}
         />
         
         {processedUrls.length > 0 && (

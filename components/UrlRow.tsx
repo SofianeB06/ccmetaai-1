@@ -13,6 +13,7 @@ interface UrlRowProps {
   onDelete: (id: string) => void;
   onDownloadScrapedText: (urlData: ProcessedUrl) => void;
   onRetry: (id: string) => void;
+  onRegenerate: (id: string) => void;
 }
 
 const getStatusColor = (status: ProcessedUrl['status']): string => {
@@ -63,7 +64,7 @@ const ProposalItem: React.FC<{ proposal: MetadataProposal, index: number }> = ({
   );
 };
 
-export const UrlRow: React.FC<UrlRowProps> = ({ urlData, onDelete, onDownloadScrapedText, onRetry }) => {
+export const UrlRow: React.FC<UrlRowProps> = ({ urlData, onDelete, onDownloadScrapedText, onRetry, onRegenerate }) => {
   const { id, url, status, detectedFramework, frameworkJustification, proposals, error } = urlData;
 
   const frameworkDetailKey = detectedFramework && Object.values(MarketingFramework).includes(detectedFramework as MarketingFramework) 
@@ -109,12 +110,21 @@ export const UrlRow: React.FC<UrlRowProps> = ({ urlData, onDelete, onDownloadScr
       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
         <div className="flex items-center space-x-2">
           {urlData.extractedText && urlData.scrapedContentFileName && status !== 'pending' && (
-            <DownloadButton 
-              onClick={() => onDownloadScrapedText(urlData)} 
+            <DownloadButton
+              onClick={() => onDownloadScrapedText(urlData)}
               tooltip="Download Scraped Text (.txt)"
             >
               <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
             </DownloadButton>
+          )}
+          {status === 'completed' && (
+            <button
+              onClick={() => onRegenerate(id)}
+              className="p-1 text-purple-600 hover:text-purple-800 dark:text-purple-400 dark:hover:text-purple-300 transition-colors duration-150"
+              title="Regenerate Metadata"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+            </button>
           )}
           {status === 'error' && (
              <button

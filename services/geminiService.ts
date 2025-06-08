@@ -4,12 +4,12 @@ import { MarketingFramework, MetadataProposal, DetectedFrameworkInfo } from '../
 import { MAX_TITLE_LENGTH, MAX_META_DESC_LENGTH, ALL_MARKETING_FRAMEWORKS_FOR_DETECTION } from '../constants';
 import { truncateAtWord, truncateAtSentence } from '../utils/textHelpers';
 
-const API_KEY = process.env.API_KEY;
-if (!API_KEY || API_KEY === "YOUR_GEMINI_API_KEY") {
-  console.error("Gemini API Key is not configured. Please set the API_KEY environment variable.");
+const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
+if (!GEMINI_API_KEY || GEMINI_API_KEY === "YOUR_GEMINI_API_KEY") {
+  console.error("Gemini API Key is not configured. Please set the GEMINI_API_KEY environment variable.");
   // Potentially throw an error or handle this state in the UI
 }
-const ai = new GoogleGenAI({ apiKey: API_KEY! });
+const ai = new GoogleGenAI({ apiKey: GEMINI_API_KEY! });
 const modelName = 'gemini-2.5-flash-preview-04-17';
 
 function parseJsonFromGeminiResponse(text: string): any {
@@ -29,7 +29,7 @@ function parseJsonFromGeminiResponse(text: string): any {
 }
 
 export const detectFramework = async (textContent: string): Promise<DetectedFrameworkInfo> => {
-  if (!API_KEY || API_KEY === "YOUR_GEMINI_API_KEY") throw new Error("API Key not configured for Gemini.");
+  if (!GEMINI_API_KEY || GEMINI_API_KEY === "YOUR_GEMINI_API_KEY") throw new Error("Gemini API Key not configured.");
   const frameworksList = ALL_MARKETING_FRAMEWORKS_FOR_DETECTION.map(f => `- ${f.name}: ${f.description}`).join('\n');
 
   const prompt = `
@@ -100,11 +100,11 @@ Return your answer ONLY in JSON format like this:
 
 
 export const generateMetadata = async (
-    textContent: string, 
-    framework: MarketingFramework | string, 
+    textContent: string,
+    framework: MarketingFramework | string,
     justification: string
 ): Promise<MetadataProposal[]> => {
-    if (!API_KEY || API_KEY === "YOUR_GEMINI_API_KEY") throw new Error("API Key not configured for Gemini.");
+    if (!GEMINI_API_KEY || GEMINI_API_KEY === "YOUR_GEMINI_API_KEY") throw new Error("Gemini API Key not configured.");
 
     const frameworkDescription = ALL_MARKETING_FRAMEWORKS_FOR_DETECTION.find(f => f.name === framework)?.description || justification;
 

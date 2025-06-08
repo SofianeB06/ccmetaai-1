@@ -1,5 +1,6 @@
 
 import React from 'react';
+import { useTranslation } from '../i18n';
 import { ProcessedUrl, MarketingFramework, MetadataProposal } from '../types';
 import { FRAMEWORK_DETAILS, MAX_TITLE_LENGTH, MAX_META_DESC_LENGTH } from '../constants';
 import { Spinner } from './Spinner';
@@ -41,30 +42,32 @@ const StatusDisplay: React.FC<{ status: ProcessedUrl['status'] }> = ({ status })
 };
 
 const ProposalItem: React.FC<{ proposal: MetadataProposal, index: number }> = ({ proposal, index }) => {
+  const { t } = useTranslation();
   return (
     <div className="py-2 border-b border-bggray-200 dark:border-bggray-700 last:border-b-0">
-      <div className="font-semibold text-sm text-bggray-800 dark:text-bggray-100">Proposal {index + 1}</div>
+      <div className="font-semibold text-sm text-bggray-800 dark:text-bggray-100">{t('proposal', { index: index + 1 })}</div>
       <div className="mt-1 flex items-start space-x-2">
         <div className="flex-1">
-          <p className="text-xs text-bggray-600 dark:text-bggray-300">Title:</p>
+          <p className="text-xs text-bggray-600 dark:text-bggray-300">{t('title')}</p>
           <p className="text-sm break-words">{proposal.title}</p>
           <CharCounter count={proposal.title.length} limit={MAX_TITLE_LENGTH} />
         </div>
-        <CopyButton text={proposal.title} tooltip="Copy Title" />
+        <CopyButton text={proposal.title} tooltip={t('copyTitle')} />
       </div>
       <div className="mt-1 flex items-start space-x-2">
         <div className="flex-1">
-          <p className="text-xs text-bggray-600 dark:text-bggray-300">Meta Description:</p>
+          <p className="text-xs text-bggray-600 dark:text-bggray-300">{t('metaDescription')}</p>
           <p className="text-sm break-words">{proposal.metaDescription}</p>
           <CharCounter count={proposal.metaDescription.length} limit={MAX_META_DESC_LENGTH} />
         </div>
-        <CopyButton text={proposal.metaDescription} tooltip="Copy Description" />
+        <CopyButton text={proposal.metaDescription} tooltip={t('copyDescription')} />
       </div>
     </div>
   );
 };
 
 export const UrlRow: React.FC<UrlRowProps> = ({ urlData, onDelete, onDownloadScrapedText, onRetry, onRegenerate }) => {
+  const { t } = useTranslation();
   const { id, url, status, detectedFramework, frameworkJustification, proposals, error } = urlData;
 
   const frameworkDetailKey = detectedFramework && Object.values(MarketingFramework).includes(detectedFramework as MarketingFramework) 
@@ -104,7 +107,7 @@ export const UrlRow: React.FC<UrlRowProps> = ({ urlData, onDelete, onDownloadScr
             ))}
           </div>
         ) : (
-          status === 'completed' && <span className="text-xs text-bggray-500 dark:text-bggray-400">No proposals generated.</span>
+          status === 'completed' && <span className="text-xs text-bggray-500 dark:text-bggray-400">{t('noProposals')}</span>
         )}
       </td>
       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
@@ -112,7 +115,7 @@ export const UrlRow: React.FC<UrlRowProps> = ({ urlData, onDelete, onDownloadScr
           {urlData.extractedText && urlData.scrapedContentFileName && status !== 'pending' && (
             <DownloadButton
               onClick={() => onDownloadScrapedText(urlData)}
-              tooltip="Download Scraped Text (.txt)"
+              tooltip={t('downloadScrapedText')}
             >
               <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
             </DownloadButton>
@@ -121,7 +124,7 @@ export const UrlRow: React.FC<UrlRowProps> = ({ urlData, onDelete, onDownloadScr
             <button
               onClick={() => onRegenerate(id)}
               className="p-1 text-purple-600 hover:text-purple-800 dark:text-purple-400 dark:hover:text-purple-300 transition-colors duration-150"
-              title="Regenerate Metadata"
+              title={t('regenerate')}
             >
               <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
             </button>
@@ -130,7 +133,7 @@ export const UrlRow: React.FC<UrlRowProps> = ({ urlData, onDelete, onDownloadScr
              <button
               onClick={() => onRetry(id)}
               className="p-1 text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 transition-colors duration-150"
-              title="Retry Processing"
+              title={t('retry')}
             >
               <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
             </button>
@@ -138,7 +141,7 @@ export const UrlRow: React.FC<UrlRowProps> = ({ urlData, onDelete, onDownloadScr
           <button
             onClick={() => onDelete(id)}
             className="p-1 text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300 transition-colors duration-150"
-            title="Delete URL"
+            title={t('delete')}
           >
            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
           </button>

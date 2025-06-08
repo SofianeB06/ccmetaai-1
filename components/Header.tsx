@@ -1,6 +1,8 @@
 
 import React from 'react';
 import { ThemeToggle } from './ThemeToggle';
+import { LanguageSelector } from './LanguageSelector';
+import { useTranslation } from '../i18n';
 
 interface HeaderProps {
   darkMode: boolean;
@@ -10,6 +12,7 @@ interface HeaderProps {
 }
 
 export const Header: React.FC<HeaderProps> = ({ darkMode, toggleDarkMode, onViewLogs, logCount }) => {
+  const { t } = useTranslation();
   return (
     <header className="bg-white dark:bg-bggray-800 shadow-md sticky top-0 z-50">
       <div className="container mx-auto px-4 py-3 flex justify-between items-center">
@@ -24,7 +27,7 @@ export const Header: React.FC<HeaderProps> = ({ darkMode, toggleDarkMode, onView
           <button
             onClick={onViewLogs}
             className="relative p-2 rounded-full hover:bg-bggray-100 dark:hover:bg-bggray-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-opacity-50"
-            aria-label="View Logs"
+            aria-label={t('viewLogs')}
           >
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-bggray-600 dark:text-bggray-300">
               <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
@@ -38,6 +41,7 @@ export const Header: React.FC<HeaderProps> = ({ darkMode, toggleDarkMode, onView
             )}
           </button>
           <ThemeToggle darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
+          <LanguageSelector />
         </div>
       </div>
     </header>

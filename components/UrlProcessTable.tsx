@@ -8,9 +8,10 @@ interface UrlProcessTableProps {
   onDeleteUrl: (id: string) => void;
   onDownloadScrapedText: (urlData: ProcessedUrl) => void;
   onRetryUrl: (id: string) => void;
+  onRegenerateUrl: (id: string) => void;
 }
 
-export const UrlProcessTable: React.FC<UrlProcessTableProps> = ({ urls, onDeleteUrl, onDownloadScrapedText, onRetryUrl }) => {
+export const UrlProcessTable: React.FC<UrlProcessTableProps> = ({ urls, onDeleteUrl, onDownloadScrapedText, onRetryUrl, onRegenerateUrl }) => {
   if (urls.length === 0) {
     return (
       <div className="text-center py-10 text-bggray-500 dark:text-bggray-400">
@@ -37,13 +38,14 @@ export const UrlProcessTable: React.FC<UrlProcessTableProps> = ({ urls, onDelete
         </thead>
         <tbody className="bg-white dark:bg-bggray-800 divide-y divide-bggray-200 dark:divide-bggray-700">
           {urls.map(urlData => (
-            <UrlRow 
-              key={urlData.id} 
-              urlData={urlData} 
-              onDelete={onDeleteUrl} 
-              onDownloadScrapedText={onDownloadScrapedText}
-              onRetry={onRetryUrl}
-            />
+          <UrlRow
+            key={urlData.id}
+            urlData={urlData}
+            onDelete={onDeleteUrl}
+            onDownloadScrapedText={onDownloadScrapedText}
+            onRetry={onRetryUrl}
+            onRegenerate={onRegenerateUrl}
+          />
           ))}
         </tbody>
       </table>

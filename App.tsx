@@ -5,6 +5,7 @@ import { UrlInput } from './components/UrlInput';
 import { UrlProcessTable } from './components/UrlProcessTable';
 import { ProgressBar } from './components/ProgressBar';
 import { LogModal } from './components/LogModal';
+import { useTranslation } from './i18n';
 import { useDarkMode } from './hooks/useDarkMode';
 import { ProcessedUrl, MarketingFramework, AppLog } from './types';
 import { fetchHtml, extractTextContent } from './services/contentExtractorService';
@@ -14,6 +15,7 @@ import { parseCSV } from './utils/csvParser';
 import { downloadFile } from './utils/fileDownloader';
 
 const App: React.FC = () => {
+  const { t } = useTranslation();
   const [processedUrls, setProcessedUrls] = useState<ProcessedUrl[]>([]);
   const [processingQueue, setProcessingQueue] = useState<string[]>([]); // Array of URL IDs
   const [activeIds, setActiveIds] = useState<string[]>([]); // Currently processing URL IDs
@@ -219,7 +221,7 @@ const App: React.FC = () => {
                     onClick={handleExportResults}
                     className="px-6 py-2 bg-primary-600 hover:bg-primary-700 text-white font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-opacity-75 transition duration-150 ease-in-out"
                 >
-                    Export All Results (CSV)
+                    {t('exportCsv')}
                 </button>
             </div>
         )}

@@ -1,5 +1,6 @@
 
 import React from 'react';
+import { useTranslation } from '../i18n';
 
 interface ThemeToggleProps {
   darkMode: boolean;
@@ -7,11 +8,12 @@ interface ThemeToggleProps {
 }
 
 export const ThemeToggle: React.FC<ThemeToggleProps> = ({ darkMode, toggleDarkMode }) => {
+  const { t } = useTranslation();
   return (
     <button
       onClick={toggleDarkMode}
       className="p-2 rounded-full hover:bg-bggray-100 dark:hover:bg-bggray-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-opacity-50"
-      aria-label={darkMode ? "Switch to light mode" : "Switch to dark mode"}
+      aria-label={darkMode ? t('switchToLight') : t('switchToDark')}
     >
       {darkMode ? (
         // Sun icon for dark mode (to switch to light)

@@ -1,5 +1,6 @@
 
 import React, { useState, useRef } from 'react';
+import { useTranslation } from '../i18n';
 
 interface UrlInputProps {
   onUrlsSubmit: (urls: string[]) => void;
@@ -8,6 +9,7 @@ interface UrlInputProps {
 }
 
 export const UrlInput: React.FC<UrlInputProps> = ({ onUrlsSubmit, onFileSubmit, disabled }) => {
+  const { t } = useTranslation();
   const [textInput, setTextInput] = useState('');
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -31,7 +33,7 @@ export const UrlInput: React.FC<UrlInputProps> = ({ onUrlsSubmit, onFileSubmit, 
     <div className="space-y-6">
       <div>
         <label htmlFor="url-textarea" className="block text-sm font-medium text-bggray-700 dark:text-bggray-300 mb-1">
-          Enter URLs (one per line)
+          {t('enterUrls')}
         </label>
         <textarea
           id="url-textarea"
@@ -47,7 +49,7 @@ export const UrlInput: React.FC<UrlInputProps> = ({ onUrlsSubmit, onFileSubmit, 
           disabled={disabled || textInput.trim() === ''}
           className="mt-3 w-full sm:w-auto px-6 py-2 bg-primary-600 hover:bg-primary-700 text-white font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-opacity-75 transition duration-150 ease-in-out disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          Add URLs
+          {t('addUrls')}
         </button>
       </div>
 
@@ -56,13 +58,13 @@ export const UrlInput: React.FC<UrlInputProps> = ({ onUrlsSubmit, onFileSubmit, 
           <div className="w-full border-t border-bggray-300 dark:border-bggray-600" />
         </div>
         <div className="relative flex justify-center">
-          <span className="px-2 bg-white dark:bg-bggray-800 text-sm text-bggray-500 dark:text-bggray-400">OR</span>
+          <span className="px-2 bg-white dark:bg-bggray-800 text-sm text-bggray-500 dark:text-bggray-400">{t('or')}</span>
         </div>
       </div>
 
       <div>
         <label htmlFor="file-upload" className="block text-sm font-medium text-bggray-700 dark:text-bggray-300 mb-1">
-          Import URLs from CSV file
+          {t('importFromCsv')}
         </label>
         <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-bggray-300 dark:border-bggray-600 border-dashed rounded-md">
           <div className="space-y-1 text-center">
@@ -74,12 +76,12 @@ export const UrlInput: React.FC<UrlInputProps> = ({ onUrlsSubmit, onFileSubmit, 
                 htmlFor="file-upload-input"
                 className={`relative cursor-pointer bg-white dark:bg-bggray-800 rounded-md font-medium text-primary-600 dark:text-primary-500 hover:text-primary-500 dark:hover:text-primary-400 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 dark:focus-within:ring-offset-bggray-800 focus-within:ring-primary-500 ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
               >
-                <span>Upload a file</span>
+                <span>{t('uploadFile')}</span>
                 <input id="file-upload-input" name="file-upload" type="file" className="sr-only" accept=".csv" onChange={handleFileChange} ref={fileInputRef} disabled={disabled} />
               </label>
-              <p className="pl-1">or drag and drop</p>
+              <p className="pl-1">{t('orDragAndDrop')}</p>
             </div>
-            <p className="text-xs text-bggray-500 dark:text-bggray-500">CSV up to 10MB</p>
+            <p className="text-xs text-bggray-500 dark:text-bggray-500">{t('csvHint')}</p>
           </div>
         </div>
       </div>

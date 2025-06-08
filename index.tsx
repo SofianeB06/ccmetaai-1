@@ -2,6 +2,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
+import { I18nProvider } from './i18n';
 
 // This is a placeholder for process.env.GEMINI_API_KEY.
 // In a real build environment, this would be set through environment variables.
@@ -23,6 +24,8 @@ if (!rootElement) {
 const root = ReactDOM.createRoot(rootElement);
 root.render(
   <React.StrictMode>
-    <App />
+    <I18nProvider>
+      <App />
+    </I18nProvider>
   </React.StrictMode>
 );

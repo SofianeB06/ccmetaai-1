@@ -3,10 +3,10 @@ import React from 'react';
 
 interface ProgressBarProps {
   progress: number;
-  currentProcessingUrl?: string;
+  currentProcessingUrls?: string[];
 }
 
-export const ProgressBar: React.FC<ProgressBarProps> = ({ progress, currentProcessingUrl }) => {
+export const ProgressBar: React.FC<ProgressBarProps> = ({ progress, currentProcessingUrls }) => {
   return (
     <div className="w-full bg-bggray-200 dark:bg-bggray-700 rounded-full h-6 shadow-inner overflow-hidden">
       <div
@@ -15,12 +15,14 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({ progress, currentProce
       >
         {progress.toFixed(0)}%
       </div>
-      {currentProcessingUrl && progress < 100 && (
+      {currentProcessingUrls && currentProcessingUrls.length > 0 && progress < 100 && (
          <p className="text-xs text-bggray-600 dark:text-bggray-300 mt-1 text-center">
-           Processing: <span className="font-semibold truncate inline-block max-w-sm align-bottom">{currentProcessingUrl}</span>
+           Processing: <span className="font-semibold truncate inline-block max-w-sm align-bottom">
+             {currentProcessingUrls.length === 1 ? currentProcessingUrls[0] : `${currentProcessingUrls.length} URLs`}
+           </span>
          </p>
       )}
-       {progress === 100 && !currentProcessingUrl && (
+       {progress === 100 && (!currentProcessingUrls || currentProcessingUrls.length === 0) && (
          <p className="text-xs text-green-600 dark:text-green-400 mt-1 text-center font-semibold">
            All URLs processed!
          </p>

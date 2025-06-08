@@ -22,3 +22,11 @@ test('ignores early period far from limit', () => {
   assert.equal(result, 'Hi. Here is some sample text that goes on without any other');
   assert.ok(result.length <= 60);
 });
+
+test('period near start leads to word truncation near limit', () => {
+  const text =
+    'Short. This is a longer piece with no punctuation near the limit whatsoever';
+  const result = truncateAtSentence(text, 40);
+  assert.equal(result, 'Short. This is a longer piece with no');
+  assert.ok(result.length <= 40);
+});

@@ -18,7 +18,8 @@ export const truncateAtSentence = (text: string, limit: number): string => {
     slice.lastIndexOf('!'),
     slice.lastIndexOf('?')
   );
-  if (lastPeriod !== -1 && lastPeriod >= limit - SENTENCE_WINDOW) {
+  const isNearLimit = lastPeriod !== -1 && limit - lastPeriod <= SENTENCE_WINDOW;
+  if (isNearLimit) {
     return slice.substring(0, lastPeriod + 1).trim();
   }
   return truncateAtWord(text, limit);

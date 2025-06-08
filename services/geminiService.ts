@@ -2,6 +2,7 @@
 import { GoogleGenAI, GenerateContentResponse } from "@google/genai";
 import { MarketingFramework, MetadataProposal, DetectedFrameworkInfo } from '../types';
 import { MAX_TITLE_LENGTH, MAX_META_DESC_LENGTH, ALL_MARKETING_FRAMEWORKS_FOR_DETECTION } from '../constants';
+import { truncateAtWord } from '../utils/textHelpers';
 
 const API_KEY = process.env.API_KEY;
 if (!API_KEY || API_KEY === "YOUR_GEMINI_API_KEY") {
@@ -156,8 +157,8 @@ Do not include any other text or explanations outside the JSON array.
 
         // Validate and truncate if necessary (though the prompt is strict)
         return parsedJson.slice(0,3).map((p: any) => ({
-            title: String(p.title || "").substring(0, MAX_TITLE_LENGTH),
-            metaDescription: String(p.metaDescription || "").substring(0, MAX_META_DESC_LENGTH),
+            title: truncateAtWord(String(p.title || ""), MAX_TITLE_LENGTH),
+            metaDescription: truncateAtWord(String(p.metaDescription || ""), MAX_META_DESC_LENGTH),
         }));
     } catch (error) {
         console.error("Error generating metadata:", error);

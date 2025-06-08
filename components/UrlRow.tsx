@@ -6,6 +6,7 @@ import { Spinner } from './Spinner';
 import { FrameworkTag } from './FrameworkTag';
 import { CharCounter } from './CharCounter';
 import { DownloadButton } from './DownloadButton';
+import { CopyButton } from './CopyButton';
 
 interface UrlRowProps {
   urlData: ProcessedUrl;
@@ -42,15 +43,21 @@ const ProposalItem: React.FC<{ proposal: MetadataProposal, index: number }> = ({
   return (
     <div className="py-2 border-b border-bggray-200 dark:border-bggray-700 last:border-b-0">
       <div className="font-semibold text-sm text-bggray-800 dark:text-bggray-100">Proposal {index + 1}</div>
-      <div className="mt-1">
-        <p className="text-xs text-bggray-600 dark:text-bggray-300">Title:</p>
-        <p className="text-sm break-words">{proposal.title}</p>
-        <CharCounter count={proposal.title.length} limit={MAX_TITLE_LENGTH} />
+      <div className="mt-1 flex items-start space-x-2">
+        <div className="flex-1">
+          <p className="text-xs text-bggray-600 dark:text-bggray-300">Title:</p>
+          <p className="text-sm break-words">{proposal.title}</p>
+          <CharCounter count={proposal.title.length} limit={MAX_TITLE_LENGTH} />
+        </div>
+        <CopyButton text={proposal.title} tooltip="Copy Title" />
       </div>
-      <div className="mt-1">
-        <p className="text-xs text-bggray-600 dark:text-bggray-300">Meta Description:</p>
-        <p className="text-sm break-words">{proposal.metaDescription}</p>
-        <CharCounter count={proposal.metaDescription.length} limit={MAX_META_DESC_LENGTH} />
+      <div className="mt-1 flex items-start space-x-2">
+        <div className="flex-1">
+          <p className="text-xs text-bggray-600 dark:text-bggray-300">Meta Description:</p>
+          <p className="text-sm break-words">{proposal.metaDescription}</p>
+          <CharCounter count={proposal.metaDescription.length} limit={MAX_META_DESC_LENGTH} />
+        </div>
+        <CopyButton text={proposal.metaDescription} tooltip="Copy Description" />
       </div>
     </div>
   );

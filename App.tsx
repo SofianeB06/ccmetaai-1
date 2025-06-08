@@ -9,14 +9,14 @@ import { useDarkMode } from './hooks/useDarkMode';
 import { ProcessedUrl, MarketingFramework, AppLog } from './types';
 import { fetchHtml, extractTextContent } from './services/contentExtractorService';
 import { detectFramework, generateMetadata } from './services/geminiService';
+import { CONCURRENCY_LIMIT } from './constants';
 import { parseCSV } from './utils/csvParser';
 import { downloadFile } from './utils/fileDownloader';
 
 const App: React.FC = () => {
   const [processedUrls, setProcessedUrls] = useState<ProcessedUrl[]>([]);
   const [processingQueue, setProcessingQueue] = useState<string[]>([]); // Array of URL IDs
-  const [isProcessing, setIsProcessing] = useState<boolean>(false);
-  const [currentProcessingUrlId, setCurrentProcessingUrlId] = useState<string | null>(null);
+  const [activeIds, setActiveIds] = useState<string[]>([]); // Currently processing URL IDs
   const [logs, setLogs] = useState<AppLog[]>([]);
   const [isLogModalOpen, setIsLogModalOpen] = useState<boolean>(false);
   const [darkMode, toggleDarkMode] = useDarkMode();
@@ -32,7 +32,6 @@ const App: React.FC = () => {
   }, []);
 
   const processSingleUrl = useCallback(async (urlId: string) => {
-    setCurrentProcessingUrlId(urlId);
     const urlData = processedUrls.find(u => u.id === urlId);
     if (!urlData) {
       addLog(`URL data not found for ID: ${urlId}`, 'error');
@@ -64,21 +63,29 @@ const App: React.FC = () => {
       updateUrlStatus(urlId, { status: 'error', error: errorMessage });
       addLog(`Error processing ${urlData.url}: ${errorMessage}`, 'error');
     } finally {
-       setCurrentProcessingUrlId(null);
+      setActiveIds(prev => prev.filter(id => id !== urlId));
     }
   }, [processedUrls, updateUrlStatus, addLog]);
 
 
   useEffect(() => {
-    if (processingQueue.length > 0 && !isProcessing) {
-      setIsProcessing(true);
-      const nextUrlId = processingQueue[0];
-      processSingleUrl(nextUrlId).finally(() => {
-        setProcessingQueue(prev => prev.slice(1));
-        setIsProcessing(false);
+    if (processingQueue.length === 0) return;
+
+    const availableSlots = CONCURRENCY_LIMIT - activeIds.length;
+    if (availableSlots <= 0) return;
+
+    const nextIds = processingQueue.slice(0, availableSlots);
+    if (nextIds.length > 0) {
+      setActiveIds(prev => [...prev, ...nextIds]);
+      setProcessingQueue(prev => prev.slice(nextIds.length));
+
+      nextIds.forEach(id => {
+        processSingleUrl(id).catch(() => {}).finally(() => {
+          // removal handled in processSingleUrl finally
+        });
       });
     }
-  }, [processingQueue, isProcessing, processSingleUrl]);
+  }, [processingQueue, activeIds, processSingleUrl]);
 
   const handleUrlsSubmit = (urls: string[]) => {
     const newProcessedUrls: ProcessedUrl[] = urls
@@ -157,12 +164,12 @@ const App: React.FC = () => {
       />
       <main className="flex-grow container mx-auto px-4 py-8">
         <div className="bg-white dark:bg-bggray-800 shadow-xl rounded-lg p-6 mb-8">
-          <UrlInput onUrlsSubmit={handleUrlsSubmit} onFileSubmit={handleFileSubmit} disabled={isProcessing && processingQueue.length > 0} />
+          <UrlInput onUrlsSubmit={handleUrlsSubmit} onFileSubmit={handleFileSubmit} disabled={activeIds.length > 0 || processingQueue.length > 0} />
         </div>
         
-        {(isProcessing || processingQueue.length > 0 || totalUrls > 0) && (
+        {(activeIds.length > 0 || processingQueue.length > 0 || totalUrls > 0) && (
           <div className="my-8">
-            <ProgressBar progress={progress} currentProcessingUrl={processedUrls.find(u => u.id === currentProcessingUrlId)?.url} />
+            <ProgressBar progress={progress} currentProcessingUrls={processedUrls.filter(u => activeIds.includes(u.id)).map(u => u.url)} />
           </div>
         )}
 

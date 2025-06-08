@@ -4,6 +4,9 @@ import { MarketingFramework, FrameworkData } from './types';
 export const MAX_TITLE_LENGTH = 65;
 export const MAX_META_DESC_LENGTH = 155;
 
+// Maximum number of URLs processed in parallel
+export const CONCURRENCY_LIMIT = 3;
+
 export const FRAMEWORK_DETAILS: Record<MarketingFramework | string, FrameworkData> = {
   [MarketingFramework.AIDA]: { name: "AIDA", color: "bg-red-500", description: "Attention, Interest, Desire, Action." },
   [MarketingFramework.PAS]: { name: "PAS", color: "bg-blue-600", description: "Problem, Agitate, Solution." },

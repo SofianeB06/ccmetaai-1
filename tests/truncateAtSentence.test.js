@@ -15,3 +15,10 @@ test('falls back to word cut when no punctuation', () => {
   assert.equal(result, 'Aucune ponctuation');
   assert.ok(result.length <= 20);
 });
+
+test('ignores early period far from limit', () => {
+  const text = 'Hi. Here is some sample text that goes on without any other punctuation in sight';
+  const result = truncateAtSentence(text, 60);
+  assert.equal(result, 'Hi. Here is some sample text that goes on without any other');
+  assert.ok(result.length <= 60);
+});

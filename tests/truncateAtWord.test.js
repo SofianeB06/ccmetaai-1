@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { truncateAtWord } from '../dist/utils/textHelpers.js';
+import { truncateAtWord } from '../dist/textHelpers.js';
 
 test('returns text unchanged when under limit', () => {
   const text = 'Short text';

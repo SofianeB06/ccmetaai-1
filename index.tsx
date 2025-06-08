@@ -3,15 +3,15 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
 
-// This is a placeholder for process.env.API_KEY.
+// This is a placeholder for process.env.GEMINI_API_KEY.
 // In a real build environment, this would be set through environment variables.
 // For demonstration purposes, you can replace "YOUR_GEMINI_API_KEY" with an actual key.
 // IMPORTANT: Do not commit your actual API key to version control.
-if (!process.env.API_KEY) {
-  process.env.API_KEY = "YOUR_GEMINI_API_KEY"; 
+if (!process.env.GEMINI_API_KEY) {
+  process.env.GEMINI_API_KEY = "YOUR_GEMINI_API_KEY";
 }
-if (process.env.API_KEY === "YOUR_GEMINI_API_KEY") {
-  console.warn("Using placeholder API Key for Gemini. Please set your actual API_KEY environment variable.");
+if (process.env.GEMINI_API_KEY === "YOUR_GEMINI_API_KEY") {
+  console.warn("Using placeholder Gemini API Key. Please set your actual GEMINI_API_KEY environment variable.");
 }
 
 

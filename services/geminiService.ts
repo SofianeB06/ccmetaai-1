@@ -33,23 +33,23 @@ export const detectFramework = async (textContent: string): Promise<DetectedFram
   const frameworksList = ALL_MARKETING_FRAMEWORKS_FOR_DETECTION.map(f => `- ${f.name}: ${f.description}`).join('\n');
 
   const prompt = `
-Analyze the following webpage content and determine the most suitable marketing framework.
-If no specific framework is strongly evident or if the content is generic, suggest 'NONE'.
+Analyse le contenu de la page ci-dessous et détermine le cadre marketing le plus pertinent.
+Si aucun cadre n'est clairement identifiable ou si le texte est générique, indique "NONE".
 
-Webpage Content Snippet (first 1500 characters):
+Extrait du contenu de la page (1500 premiers caractères) :
 ---
 ${textContent.substring(0, 1500)}
 ---
 
-Consider these marketing frameworks:
+Cadres marketing possibles :
 ${frameworksList}
-- NONE: For general content or when no specific framework is clearly applicable.
+- NONE : pour un contenu général ou lorsqu'aucun cadre spécifique ne s'applique.
 
-Which marketing framework is most prominently used or would be most effective for this content?
-Provide the name of the framework (e.g., AIDA, PAS, STDC, BAB, FAB, QUEST, NONE) and a single, concise sentence (max 20 words) justifying your choice.
+Quel cadre marketing est le plus présent ou serait le plus efficace pour ce contenu ?
+Donne uniquement le nom du cadre (ex. AIDA, PAS, STDC, BAB, FAB, QUEST, NONE) ainsi qu'une phrase concise (20 mots maximum) justifiant ton choix.
 
-Return your answer ONLY in JSON format like this:
-{"framework": "FRAMEWORK_NAME", "justification": "Your concise justification here."}
+Réponds UNIQUEMENT en JSON au format :
+{"framework": "NOM_DU_CADRE", "justification": "Ta justification concise ici."}
 `;
 
   try {
@@ -102,41 +102,43 @@ Return your answer ONLY in JSON format like this:
 export const generateMetadata = async (
     textContent: string,
     framework: MarketingFramework | string,
-    justification: string
+    justification: string,
+    language: string = 'fr'
 ): Promise<MetadataProposal[]> => {
     if (!GEMINI_API_KEY || GEMINI_API_KEY === "YOUR_GEMINI_API_KEY") throw new Error("Gemini API Key not configured.");
 
     const frameworkDescription = ALL_MARKETING_FRAMEWORKS_FOR_DETECTION.find(f => f.name === framework)?.description || justification;
 
     const prompt = `
-You are an expert SEO copywriter. Based on the following webpage content and the identified marketing approach, generate 3 unique and compelling SEO-optimized suggestions.
+Tu es un rédacteur SEO expert. À partir du contenu de la page ci-dessous et du cadre marketing identifié, génère 3 propositions uniques et convaincantes optimisées pour le SEO.
 
-Webpage Content Snippet (first 2000 characters):
+Extrait du contenu de la page (premiers 2000 caractères) :
 ---
 ${textContent.substring(0, 2000)}
 ---
 
-Identified Marketing Approach: ${framework} (${frameworkDescription})
+Cadre marketing identifié : ${framework} (${frameworkDescription})
 
-For each of the 3 suggestions, provide:
-1. A 'title' (strict maximum ${MAX_TITLE_LENGTH} characters).
-2. A 'metaDescription' (strict maximum ${MAX_META_DESC_LENGTH} characters).
+Pour chacune des 3 propositions, fournis :
+1. un 'title' (maximum strict de ${MAX_TITLE_LENGTH} caractères),
+2. une 'metaDescription' (maximum strict de ${MAX_META_DESC_LENGTH} caractères).
+Les titres et les meta descriptions doivent être rédigés en ${language}.
 
-Ensure the suggestions are:
-- Unique from each other.
-- Highly engaging to maximize click-through rate (CTR).
-- Strictly adhere to the character limits.
-- Incorporate primary keywords from the content naturally.
-- Reflect the tone and purpose of the webpage content.
+Assure-toi que les propositions sont :
+- uniques entre elles,
+- très engageantes pour maximiser le taux de clic,
+- conformes aux limites de caractères,
+- intégrant naturellement les mots-clés principaux du contenu,
+- fidèles au ton et à l'objectif de la page.
 
-Return your answer ONLY as a JSON array of 3 objects, where each object has "title" and "metaDescription" properties.
-Example:
+Rends ta réponse UNIQUEMENT sous la forme d'un tableau JSON de 3 objets possédant les propriétés "title" et "metaDescription".
+Exemple :
 [
-  {"title": "Example Title 1 (Max ${MAX_TITLE_LENGTH} chars)", "metaDescription": "Example meta description 1... (Max ${MAX_META_DESC_LENGTH} chars)"},
-  {"title": "Example Title 2 (Max ${MAX_TITLE_LENGTH} chars)", "metaDescription": "Example meta description 2... (Max ${MAX_META_DESC_LENGTH} chars)"},
-  {"title": "Example Title 3 (Max ${MAX_TITLE_LENGTH} chars)", "metaDescription": "Example meta description 3... (Max ${MAX_META_DESC_LENGTH} chars)"}
+  {"title": "Exemple de titre 1 (Max ${MAX_TITLE_LENGTH} caractères)", "metaDescription": "Exemple de méta description 1... (Max ${MAX_META_DESC_LENGTH} caractères)"},
+  {"title": "Exemple de titre 2 (Max ${MAX_TITLE_LENGTH} caractères)", "metaDescription": "Exemple de méta description 2... (Max ${MAX_META_DESC_LENGTH} caractères)"},
+  {"title": "Exemple de titre 3 (Max ${MAX_TITLE_LENGTH} caractères)", "metaDescription": "Exemple de méta description 3... (Max ${MAX_META_DESC_LENGTH} caractères)"}
 ]
-Do not include any other text or explanations outside the JSON array.
+N'inclus aucun autre texte ou explication en dehors du tableau JSON.
 `;
 
     try {

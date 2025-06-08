@@ -55,7 +55,7 @@ const App: React.FC = () => {
         status: 'generating' 
       });
       addLog(`Generating metadata for ${urlData.url} using ${frameworkResult.framework} framework`, 'info');
-      const metadataProposals = await generateMetadata(textContent, frameworkResult.framework, frameworkResult.justification);
+      const metadataProposals = await generateMetadata(textContent, frameworkResult.framework, frameworkResult.justification, 'fr');
       updateUrlStatus(urlId, { proposals: metadataProposals, status: 'completed' });
       addLog(`Successfully processed ${urlData.url}`, 'success');
     } catch (error: any) {
@@ -165,7 +165,7 @@ const App: React.FC = () => {
     try {
       updateUrlStatus(id, { status: 'generating' });
       addLog(`Regenerating metadata for ${urlData.url}`, 'info');
-      const proposals = await generateMetadata(urlData.extractedText, urlData.detectedFramework, urlData.frameworkJustification || '');
+      const proposals = await generateMetadata(urlData.extractedText, urlData.detectedFramework, urlData.frameworkJustification || '', 'fr');
       updateUrlStatus(id, { proposals, status: 'completed' });
       addLog(`Metadata regenerated for ${urlData.url}`, 'success');
     } catch (error: any) {

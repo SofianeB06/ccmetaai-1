@@ -7,7 +7,11 @@ type Language = 'en' | 'fr';
 const resources = { en, fr } as const;
 
 const detectBrowserLanguage = (): Language => {
-  if (typeof navigator !== 'undefined') {
+  if (typeof window !== 'undefined') {
+    const stored = localStorage.getItem('lang');
+    if (stored === 'en' || stored === 'fr') {
+      return stored;
+    }
     const lang = navigator.language.split('-')[0];
     if (lang === 'fr') return 'fr';
   }
@@ -28,6 +32,23 @@ const I18nContext = createContext<I18nContextProps>({
 
 export const I18nProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [lang, setLang] = useState<Language>(detectBrowserLanguage());
+
+  // Load stored language preference on mount
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const stored = localStorage.getItem('lang');
+      if (stored === 'en' || stored === 'fr') {
+        setLang(stored);
+      }
+    }
+  }, []);
+
+  // Persist language preference whenever it changes
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('lang', lang);
+    }
+  }, [lang]);
 
   const t = (key: keyof typeof en, vars?: Record<string, string | number>) => {
     const str = (resources[lang] as any)[key] ?? (resources.en as any)[key] ?? key;

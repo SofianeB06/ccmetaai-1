@@ -9,7 +9,7 @@ import { useTranslation } from './i18n.tsx';
 import { useDarkMode } from './hooks/useDarkMode';
 import { ProcessedUrl, MarketingFramework, AppLog } from './types';
 import { fetchHtml, extractTextContent } from './services/contentExtractorService';
-import { detectFramework, generateMetadata, detectLanguage } from './services/geminiService';
+import { detectFramework, generateMetadata, detectLanguage } from './services/openaiService';
 import { CONCURRENCY_LIMIT } from './constants';
 import { parseCSV } from './utils/csvParser';
 import { downloadFile } from './utils/fileDownloader';

@@ -4,15 +4,15 @@ import ReactDOM from 'react-dom/client';
 import App from './App';
 import { I18nProvider } from './i18n.tsx';
 
-// This is a placeholder for process.env.GEMINI_API_KEY.
+// This is a placeholder for process.env.OPENAI_API_KEY.
 // In a real build environment, this would be set through environment variables.
-// For demonstration purposes, you can replace "YOUR_GEMINI_API_KEY" with an actual key.
+// For demonstration purposes, you can replace "YOUR_OPENAI_API_KEY" with an actual key.
 // IMPORTANT: Do not commit your actual API key to version control.
-if (!process.env.GEMINI_API_KEY) {
-  process.env.GEMINI_API_KEY = "YOUR_GEMINI_API_KEY";
+if (!process.env.OPENAI_API_KEY) {
+  process.env.OPENAI_API_KEY = "YOUR_OPENAI_API_KEY";
 }
-if (process.env.GEMINI_API_KEY === "YOUR_GEMINI_API_KEY") {
-  console.warn("Using placeholder Gemini API Key. Please set your actual GEMINI_API_KEY environment variable.");
+if (process.env.OPENAI_API_KEY === "YOUR_OPENAI_API_KEY") {
+  console.warn("Using placeholder OpenAI API Key. Please set your actual OPENAI_API_KEY environment variable.");
 }
 
 

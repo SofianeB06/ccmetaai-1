@@ -2,7 +2,7 @@
 import React from 'react';
 import { ProcessedUrl } from '../types';
 import { UrlRow } from './UrlRow';
-import { useTranslation } from '../i18n';
+import { useTranslation } from '../i18n.tsx';
 
 interface UrlProcessTableProps {
   urls: ProcessedUrl[];

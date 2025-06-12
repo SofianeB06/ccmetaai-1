@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { useTranslation } from '../i18n';
+import { useTranslation } from '../i18n.tsx';
 import { ProcessedUrl, MarketingFramework, MetadataProposal } from '../types';
 import { FRAMEWORK_DETAILS, MAX_TITLE_LENGTH, MAX_META_DESC_LENGTH } from '../constants';
 import { Spinner } from './Spinner';

@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { useTranslation } from '../i18n';
+import { useTranslation } from '../i18n.tsx';
 
 interface ProgressBarProps {
   progress: number;

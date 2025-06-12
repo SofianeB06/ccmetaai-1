@@ -1,6 +1,6 @@
 
 import React, { useState, useRef } from 'react';
-import { useTranslation } from '../i18n';
+import { useTranslation } from '../i18n.tsx';
 
 interface UrlInputProps {
   onUrlsSubmit: (urls: string[]) => void;

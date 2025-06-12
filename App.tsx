@@ -5,7 +5,7 @@ import { UrlInput } from './components/UrlInput';
 import { UrlProcessTable } from './components/UrlProcessTable';
 import { ProgressBar } from './components/ProgressBar';
 import { LogModal } from './components/LogModal';
-import { useTranslation } from './i18n';
+import { useTranslation } from './i18n.tsx';
 import { useDarkMode } from './hooks/useDarkMode';
 import { ProcessedUrl, MarketingFramework, AppLog } from './types';
 import { fetchHtml, extractTextContent } from './services/contentExtractorService';

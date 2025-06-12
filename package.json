@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "test": "npx tsc utils/textHelpers.ts --lib ES2020,DOM --module ES2020 --target ES2020 --outDir dist && node --test tests/*.test.js"
+    "test": "npx tsc utils/textHelpers.ts utils/detectLanguage.ts --lib ES2020,DOM --module ES2020 --target ES2020 --outDir dist && node --test tests/*.test.js"
   },
   "dependencies": {
     "react": "^19.1.0",

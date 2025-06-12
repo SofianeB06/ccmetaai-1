@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { AppLog } from '../types';
-import { useTranslation } from '../i18n';
+import { useTranslation } from '../i18n.tsx';
 
 interface LogModalProps {
   logs: AppLog[];

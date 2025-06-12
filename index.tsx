@@ -2,7 +2,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
-import { I18nProvider } from './i18n';
+import { I18nProvider } from './i18n.tsx';
 
 // This is a placeholder for process.env.GEMINI_API_KEY.
 // In a real build environment, this would be set through environment variables.

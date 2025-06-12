@@ -9,7 +9,7 @@ import { useTranslation } from './i18n.tsx';
 import { useDarkMode } from './hooks/useDarkMode';
 import { ProcessedUrl, MarketingFramework, AppLog } from './types';
 import { fetchHtml, extractTextContent } from './services/contentExtractorService';
-import { detectFramework, generateMetadata } from './services/geminiService';
+import { detectFramework, generateMetadata, detectLanguage } from './services/geminiService';
 import { CONCURRENCY_LIMIT } from './constants';
 import { parseCSV } from './utils/csvParser';
 import { downloadFile } from './utils/fileDownloader';
@@ -49,6 +49,9 @@ const App: React.FC = () => {
       const textContent = extractTextContent(htmlContent, urlData.url);
       const scrapedContentFileName = `${urlData.url.replace(/[^a-zA-Z0-9]/g, '_')}_scraped.txt`;
       updateUrlStatus(urlId, { extractedText: textContent, status: 'detecting', scrapedContentFileName });
+      addLog(`Detecting language for ${urlData.url}`, 'info');
+      const languageCode = await detectLanguage(textContent);
+      updateUrlStatus(urlId, { detectedLanguage: languageCode });
       addLog(`Detecting marketing framework for ${urlData.url}`, 'info');
       const frameworkResult = await detectFramework(textContent);
       updateUrlStatus(urlId, { 
@@ -57,7 +60,7 @@ const App: React.FC = () => {
         status: 'generating' 
       });
       addLog(`Generating metadata for ${urlData.url} using ${frameworkResult.framework} framework`, 'info');
-      const metadataProposals = await generateMetadata(textContent, frameworkResult.framework, frameworkResult.justification, 'fr');
+      const metadataProposals = await generateMetadata(textContent, frameworkResult.framework, frameworkResult.justification, languageCode);
       updateUrlStatus(urlId, { proposals: metadataProposals, status: 'completed' });
       addLog(`Successfully processed ${urlData.url}`, 'success');
     } catch (error: any) {
@@ -167,7 +170,13 @@ const App: React.FC = () => {
     try {
       updateUrlStatus(id, { status: 'generating' });
       addLog(`Regenerating metadata for ${urlData.url}`, 'info');
-      const proposals = await generateMetadata(urlData.extractedText, urlData.detectedFramework, urlData.frameworkJustification || '', 'fr');
+      let language = urlData.detectedLanguage;
+      if (!language) {
+        addLog(`Detecting language for ${urlData.url}`, 'info');
+        language = await detectLanguage(urlData.extractedText);
+        updateUrlStatus(id, { detectedLanguage: language });
+      }
+      const proposals = await generateMetadata(urlData.extractedText, urlData.detectedFramework, urlData.frameworkJustification || '', language);
       updateUrlStatus(id, { proposals, status: 'completed' });
       addLog(`Metadata regenerated for ${urlData.url}`, 'success');
     } catch (error: any) {
@@ -207,7 +216,7 @@ const App: React.FC = () => {
           onRetryUrl={(urlId) => {
             const urlToRetry = processedUrls.find(u => u.id === urlId);
             if (urlToRetry) {
-              updateUrlStatus(urlId, { status: 'pending', error: undefined, proposals: undefined, detectedFramework: undefined, frameworkJustification: undefined });
+              updateUrlStatus(urlId, { status: 'pending', error: undefined, proposals: undefined, detectedFramework: undefined, frameworkJustification: undefined, detectedLanguage: undefined });
               setProcessingQueue(prev => [...prev, urlId]);
               addLog(`Retrying URL: ${urlToRetry.url}`, 'info');
             }

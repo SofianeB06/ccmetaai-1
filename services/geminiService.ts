@@ -28,6 +28,32 @@ function parseJsonFromGeminiResponse(text: string): any {
   }
 }
 
+export const detectLanguage = async (textContent: string): Promise<string> => {
+  if (!GEMINI_API_KEY || GEMINI_API_KEY === "YOUR_GEMINI_API_KEY") throw new Error("Gemini API Key not configured.");
+  const prompt = `Identify the primary language of the text below and respond ONLY in JSON with the ISO 639-1 code under the key \"language\".
+
+---\n${textContent.substring(0, 1000)}\n---`;
+  try {
+    const response: GenerateContentResponse = await ai.models.generateContent({
+        model: modelName,
+        contents: prompt,
+        config: {
+            responseMimeType: "application/json",
+            temperature: 0,
+        }
+    });
+    const parsed = parseJsonFromGeminiResponse(response.text);
+    const code = String(parsed.language || '').trim().toLowerCase();
+    if (!/^[a-z]{2}$/.test(code)) {
+        throw new Error('Invalid language code received from AI');
+    }
+    return code;
+  } catch (error) {
+    console.error('Error detecting language:', error);
+    throw error;
+  }
+};
+
 export const detectFramework = async (textContent: string): Promise<DetectedFrameworkInfo> => {
   if (!GEMINI_API_KEY || GEMINI_API_KEY === "YOUR_GEMINI_API_KEY") throw new Error("Gemini API Key not configured.");
   const frameworksList = ALL_MARKETING_FRAMEWORKS_FOR_DETECTION.map(f => `- ${f.name}: ${f.description}`).join('\n');

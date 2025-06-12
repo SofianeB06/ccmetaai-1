@@ -24,6 +24,7 @@ export interface ProcessedUrl {
   extractedText?: string;
   detectedFramework?: MarketingFramework | string; // Allow string for custom frameworks
   frameworkJustification?: string;
+  detectedLanguage?: string;
   proposals?: Array<{ title: string; metaDescription: string }>;
   error?: string;
   scrapedContentFileName?: string;

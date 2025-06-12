@@ -11,6 +11,8 @@ The interface is displayed in **French** by default. When processing pages, the 
 
 1. Install dependencies:
    `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key (also used if `detectLanguage` relies on Gemini)
+2. Add your `OPENAI_API_KEY` to an `.env.local` file. You can also set `OPENAI_MODEL` to override the default model (`gpt-3.5-turbo`).
 3. Run the app:
    `npm run dev`
+
+The app defaults to OpenAI's `gpt-3.5-turbo` model. Free or new accounts may have strict rate limits, so adjust usage or upgrade your plan accordingly.

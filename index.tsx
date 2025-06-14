@@ -9,10 +9,15 @@ import { I18nProvider } from './i18n.tsx';
 // For demonstration purposes, you can replace "YOUR_OPENAI_API_KEY" with an actual key.
 // IMPORTANT: Do not commit your actual API key to version control.
 if (!process.env.OPENAI_API_KEY) {
-  process.env.OPENAI_API_KEY = "YOUR_OPENAI_API_KEY";
-}
-if (process.env.OPENAI_API_KEY === "YOUR_OPENAI_API_KEY") {
-  console.warn("Using placeholder OpenAI API Key. Please set your actual OPENAI_API_KEY environment variable.");
+  console.warn(
+    'OPENAI_API_KEY environment variable is missing. ' +
+    'Some functionality may not work until it is set.'
+  );
+} else if (process.env.OPENAI_API_KEY === 'YOUR_OPENAI_API_KEY') {
+  console.warn(
+    'Using placeholder OpenAI API Key. ' +
+    'Please set your actual OPENAI_API_KEY environment variable.'
+  );
 }
 
 

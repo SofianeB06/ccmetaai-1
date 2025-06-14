@@ -163,11 +163,14 @@ N'inclus aucun autre texte ou explication en dehors du tableau JSON.`;
       temperature: 0.7,
       response_format: { type: 'json_object' }
     });
-    const parsedJson = parseJsonFromOpenAIResponse(response.choices[0].message?.content || '');
-    if (!Array.isArray(parsedJson) || parsedJson.length === 0 || !parsedJson[0].title || !parsedJson[0].metaDescription) {
+    const raw = parseJsonFromOpenAIResponse(response.choices[0].message?.content || '');
+    const proposals = Array.isArray(raw) ? raw
+                    : Array.isArray((raw as any).proposals) ? (raw as any).proposals
+                    : null;
+    if (!proposals || proposals.length === 0 || !proposals[0].title || !proposals[0].metaDescription) {
       throw new Error('Invalid metadata proposals response structure from AI.');
     }
-    return parsedJson.slice(0,3).map((p: any) => ({
+    return proposals.slice(0, 3).map((p: any) => ({
       title: truncateAtWord(String(p.title || ''), MAX_TITLE_LENGTH),
       metaDescription: truncateAtSentence(String(p.metaDescription || ''), MAX_META_DESC_LENGTH),
     }));

@@ -14,7 +14,10 @@ const getAIClient = (): OpenAI => {
     if (!OPENAI_API_KEY || OPENAI_API_KEY === 'YOUR_OPENAI_API_KEY') {
       throw new Error('OpenAI API Key not configured.');
     }
-    ai = new OpenAI({ apiKey: OPENAI_API_KEY });
+    ai = new OpenAI({
+      apiKey: OPENAI_API_KEY,
+      dangerouslyAllowBrowser: true,
+    });
   }
   return ai;
 };

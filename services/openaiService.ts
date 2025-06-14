@@ -8,7 +8,12 @@ if (!OPENAI_API_KEY || OPENAI_API_KEY === "YOUR_OPENAI_API_KEY") {
   console.error('OpenAI API Key is not configured. Please set the OPENAI_API_KEY environment variable.');
 }
 
-const ai = new OpenAI({ apiKey: OPENAI_API_KEY! });
+let ai = new OpenAI({ apiKey: OPENAI_API_KEY! });
+
+// Allows injecting a custom OpenAI client (e.g. for tests)
+export const setOpenAIClient = (client: OpenAI) => {
+  ai = client;
+};
 const modelName = 'gpt-4o';
 
 function parseJsonFromOpenAIResponse(text: string): any {

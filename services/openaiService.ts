@@ -8,7 +8,16 @@ if (!OPENAI_API_KEY || OPENAI_API_KEY === "YOUR_OPENAI_API_KEY") {
   console.error('OpenAI API Key is not configured. Please set the OPENAI_API_KEY environment variable.');
 }
 
-let ai = new OpenAI({ apiKey: OPENAI_API_KEY! });
+let ai: OpenAI | null = null;
+const getAIClient = (): OpenAI => {
+  if (!ai) {
+    if (!OPENAI_API_KEY || OPENAI_API_KEY === 'YOUR_OPENAI_API_KEY') {
+      throw new Error('OpenAI API Key not configured.');
+    }
+    ai = new OpenAI({ apiKey: OPENAI_API_KEY });
+  }
+  return ai;
+};
 
 // Allows injecting a custom OpenAI client (e.g. for tests)
 export const setOpenAIClient = (client: OpenAI) => {
@@ -30,7 +39,8 @@ export const detectLanguage = async (textContent: string): Promise<string> => {
   if (!OPENAI_API_KEY || OPENAI_API_KEY === 'YOUR_OPENAI_API_KEY') throw new Error('OpenAI API Key not configured.');
   const prompt = `Identify the primary language of the text below and respond ONLY in JSON with the ISO 639-1 code under the key "language".\n\n---\n${textContent.substring(0, 1000)}\n---`;
   try {
-    const response = await ai.chat.completions.create({
+    const client = getAIClient();
+    const response = await client.chat.completions.create({
       model: modelName,
       messages: [{ role: 'user', content: prompt }],
       temperature: 0,
@@ -70,7 +80,8 @@ Donne uniquement le nom du cadre (ex. AIDA, PAS, STDC, BAB, FAB, QUEST, NONE) ai
 R\u00e9ponds UNIQUEMENT en JSON au format :
 {"framework": "NOM_DU_CADRE", "justification": "Ta justification concise ici."}`;
   try {
-    const response = await ai.chat.completions.create({
+    const client = getAIClient();
+    const response = await client.chat.completions.create({
       model: modelName,
       messages: [{ role: 'user', content: prompt }],
       temperature: 0.3,
@@ -142,7 +153,8 @@ Exemple :
 ]
 N'inclus aucun autre texte ou explication en dehors du tableau JSON.`;
   try {
-    const response = await ai.chat.completions.create({
+    const client = getAIClient();
+    const response = await client.chat.completions.create({
       model: modelName,
       messages: [{ role: 'user', content: prompt }],
       temperature: 0.7,

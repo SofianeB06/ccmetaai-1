@@ -164,15 +164,28 @@ N'inclus aucun autre texte ou explication en dehors du tableau JSON.`;
       response_format: { type: 'json_object' }
     });
     const raw = parseJsonFromOpenAIResponse(response.choices[0].message?.content || '');
-    const proposals = Array.isArray(raw) ? raw
-                    : Array.isArray((raw as any).proposals) ? (raw as any).proposals
-                    : null;
-    if (!proposals || proposals.length === 0 || !proposals[0].title || !proposals[0].metaDescription) {
+    const normalize = (obj: any) => {
+      const lowerKeys: Record<string, any> = {};
+      Object.keys(obj || {}).forEach(k => {
+        lowerKeys[k.toLowerCase().replace(/[^a-z]/g, '')] = obj[k];
+      });
+      const title = lowerKeys['title'];
+      const desc = lowerKeys['metadescription'] || lowerKeys['metadesc'];
+      return title && desc ? { title, metaDescription: desc } : null;
+    };
+    let arr: any[] | null = null;
+    if (Array.isArray(raw)) arr = raw;
+    else if (Array.isArray((raw as any).proposals)) arr = (raw as any).proposals;
+    else if (Array.isArray((raw as any).metadata)) arr = (raw as any).metadata;
+    else if (Array.isArray((raw as any).results)) arr = (raw as any).results;
+    else if (raw && typeof raw === 'object') arr = [raw];
+    const proposals = (arr || []).map(normalize).filter(Boolean);
+    if (proposals.length === 0) {
       throw new Error('Invalid metadata proposals response structure from AI.');
     }
-    return proposals.slice(0, 3).map((p: any) => ({
-      title: truncateAtWord(String(p.title || ''), MAX_TITLE_LENGTH),
-      metaDescription: truncateAtSentence(String(p.metaDescription || ''), MAX_META_DESC_LENGTH),
+    return proposals.slice(0, 3).map(p => ({
+      title: truncateAtWord(String(p.title), MAX_TITLE_LENGTH),
+      metaDescription: truncateAtSentence(String(p.metaDescription), MAX_META_DESC_LENGTH),
     }));
   } catch (error) {
     console.error('Error generating metadata:', error);

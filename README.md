@@ -12,7 +12,8 @@ The interface is displayed in **French** by default. When processing pages, the 
 1. Install dependencies:
    `npm install`
 2. Set the `OPENAI_API_KEY` in [.env.local](.env.local) to your OpenAI API key
-3. Run the app:
+3. (Optional) Set `CONCURRENCY_LIMIT` to control how many URLs are processed in parallel and `OPENAI_MODEL` to specify the OpenAI model.
+4. Run the app:
    `npm run dev`
 
 ## License

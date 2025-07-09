@@ -26,7 +26,7 @@ const getAIClient = (): OpenAI => {
 export const setOpenAIClient = (client: OpenAI) => {
   ai = client;
 };
-const modelName = 'gpt-4o';
+const modelName = process.env.OPENAI_MODEL || 'gpt-4o';
 
 function parseJsonFromOpenAIResponse(text: string): any {
   try {
@@ -73,12 +73,11 @@ Extrait du contenu de la page (1500 premiers caract\u00e8res) :
 ${textContent.substring(0, 1500)}
 ---
 
-Cadres marketing possibles :
+Cadres marketing disponibles :
 ${frameworksList}
-- NONE : pour un contenu g\u00e9n\u00e9ral ou lorsqu'aucun cadre sp\u00e9cifique ne s'applique.
 
-Quel cadre marketing est le plus pr\u00e9sent ou serait le plus efficace pour ce contenu ?
-Donne uniquement le nom du cadre (ex. AIDA, PAS, STDC, BAB, FAB, QUEST, NONE) ainsi qu'une phrase concise (20 mots maximum) justifiant ton choix.
+Quel cadre marketing recommanderais-tu pour ce contenu ? Choisis celui qui serait le plus efficace, même si aucun n'est clairement identifiable.
+Donne uniquement le nom du cadre (ex. AIDA, PAS, STDC, BAB, FAB, QUEST) ainsi qu'une phrase concise (20 mots maximum) justifiant ton choix.
 
 R\u00e9ponds UNIQUEMENT en JSON au format :
 {"framework": "NOM_DU_CADRE", "justification": "Ta justification concise ici."}`;
